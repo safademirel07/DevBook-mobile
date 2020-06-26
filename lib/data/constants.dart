@@ -1,5 +1,8 @@
 class Constants {
   static const String auth_token = "authToken";
+  static const String uid_token = "uidToken";
+  static const String user_token = "userToken";
+  static const String password_token = "passToken";
   //static const String api_url = "https://devbook-api.azurewebsites.net";
   static const String api_url = "http://10.0.2.2:3000";
 

@@ -15,24 +15,29 @@ class Profile {
   List<Experience> experience;
   List<Repository> repository;
   SocialMedia socialMedia;
+  String email;
+  bool isMe;
 
-  Profile(
-      {this.profilePhoto,
-      this.company,
-      this.website,
-      this.location,
-      this.skills,
-      this.biography,
-      this.githubUsername,
-      this.sId,
-      this.handler,
-      this.status,
-      this.user,
-      this.createDate,
-      this.education,
-      this.experience,
-      this.repository,
-      this.socialMedia});
+  Profile({
+    this.profilePhoto,
+    this.company,
+    this.website,
+    this.location,
+    this.skills,
+    this.biography,
+    this.githubUsername,
+    this.sId,
+    this.handler,
+    this.status,
+    this.user,
+    this.createDate,
+    this.education,
+    this.experience,
+    this.repository,
+    this.socialMedia,
+    this.email,
+    this.isMe,
+  });
 
   Profile.fromJson(Map<String, dynamic> json) {
     profilePhoto = json['profilePhoto'];
@@ -73,6 +78,8 @@ class Profile {
     socialMedia = json['socialMedia'] != null
         ? new SocialMedia.fromJson(json['socialMedia'])
         : null;
+    email = json['email'];
+    isMe = json["isMe"];
   }
 
   Map<String, dynamic> toJson() {
@@ -91,6 +98,7 @@ class Profile {
     data['status'] = this.status;
     data['user'] = this.user;
     data['createDate'] = this.createDate;
+    data['email'] = this.email;
     if (this.education != null) {
       data['education'] = this.education.map((v) => v.toJson()).toList();
     }

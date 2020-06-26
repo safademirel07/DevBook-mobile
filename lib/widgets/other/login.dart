@@ -3,14 +3,17 @@ import 'dart:convert';
 import 'package:devbook_new/data/constants.dart';
 import 'package:devbook_new/data/sharedpref/shared_preference_helper.dart';
 import 'package:devbook_new/home.dart';
+import 'package:devbook_new/models/get/firebase.dart';
 import 'package:devbook_new/models/get/user.dart';
 import 'package:devbook_new/providers/user_provider.dart';
 import 'package:devbook_new/widgets/login/login_form.dart';
 import 'package:devbook_new/widgets/other/logo.dart';
 import 'package:devbook_new/widgets/other/register.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
@@ -23,7 +26,16 @@ class _LoginState extends State<Login> {
   final GlobalKey<FormBuilderState> _fbKey = GlobalKey<FormBuilderState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
+  // final FirebaseAuth _firebaseAuth = FirebaseAuth();
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
   //String apiUrl = "http://10.0.2.2:3000";
+
+  Future<String> currentUser() async {
+    FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    return user.uid;
+  }
 
   Future<User> login(String _email, String _password) async {
     final http.Response response = await http.post(
@@ -33,14 +45,35 @@ class _LoginState extends State<Login> {
       },
       body: jsonEncode(
         <String, String>{
-          'email': _email,
+          'email': _email.trim(),
           'password': _password,
         },
       ),
     );
 
     if (response.statusCode == 200) {
-      return User.fromJson(json.decode(response.body));
+      try {
+        var firebase = Firebase();
+
+        await SharedPreferenceHelper.setUser(_email.trim());
+        await SharedPreferenceHelper.setPassword(_password);
+
+        await FirebaseAuth.instance.signOut();
+
+        AuthCredential credential = EmailAuthProvider.getCredential(
+            email: _email.trim(), password: _password);
+
+        FirebaseUser signIn =
+            (await _auth.signInWithCredential(credential)).user;
+
+        firebase.setUser(signIn);
+
+        print("Login sucess. Email " + signIn.email);
+
+        return User.fromJson(json.decode(response.body), signIn.uid);
+      } catch (e) {
+        throw Future.error("Failed to login");
+      }
     } else {
       throw Future.error("Failed to login");
     }
@@ -83,6 +116,7 @@ class _LoginState extends State<Login> {
           setState(() {
             clickedLogin = false;
             SharedPreferenceHelper.setAuthToken(user.token);
+            SharedPreferenceHelper.setUID(user.uid);
             Navigator.of(context).push(new MaterialPageRoute(
               builder: (BuildContext context) => new Home(),
             ));

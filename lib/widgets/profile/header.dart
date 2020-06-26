@@ -3,6 +3,7 @@ import 'package:devbook_new/main.dart';
 import 'package:devbook_new/models/get/profile.dart';
 import 'package:devbook_new/providers/user_provider.dart';
 import 'package:devbook_new/widgets/CustomCircleAvatar.dart';
+import 'package:devbook_new/widgets/chat/chat.dart';
 import 'package:devbook_new/widgets/other/login.dart';
 import 'package:devbook_new/widgets/profile/edit_profile.dart';
 import 'package:flutter/material.dart';
@@ -78,6 +79,15 @@ class Header extends StatelessWidget {
     );
   }
 
+  sendMessage(BuildContext context) {
+    String email = profile.email;
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => Chat(
+        peerProfile: profile,
+      ),
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     var padding = MediaQuery.of(context).padding; //Safe Area
@@ -137,13 +147,19 @@ class Header extends StatelessWidget {
                             SizedBox(
                               width: 5,
                             ),
-                            if (owner)
-                              InkWell(
-                                onTap: () {
-                                  _editProfileModal(context);
-                                },
-                                child: Icon(Icons.edit),
-                              ),
+                            profile.isMe
+                                ? InkWell(
+                                    onTap: () {
+                                      _editProfileModal(context);
+                                    },
+                                    child: Icon(Icons.edit),
+                                  )
+                                : InkWell(
+                                    onTap: () {
+                                      sendMessage(context);
+                                    },
+                                    child: Icon(Icons.message),
+                                  ),
                             SizedBox(
                               width: 5,
                             ),

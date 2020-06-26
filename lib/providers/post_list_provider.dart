@@ -31,7 +31,6 @@ class PostListProvider with ChangeNotifier {
       _posts = null;
       PostListRequest().fetchPostAll(page, hashtag, sort, search).then((data) {
         if (data.statusCode == 200) {
-          print("gelen sort" + hashtag + "sort " + sort.toString());
           List<Post> posts = (json.decode(data.body)['posts'] as List)
               .map((data) => Post.fromJson(data))
               .toList();
@@ -79,8 +78,6 @@ class PostListProvider with ChangeNotifier {
       String message, String hashtag, int sort, String search) async {
     setAdding(true);
 
-    print("addPost in icinde search" + search);
-
     PostRequest().addPost(message).then((data) {
       if (data.statusCode == 201) {
         setAdding(false);
@@ -114,19 +111,7 @@ class PostListProvider with ChangeNotifier {
   void changePost(int index, Post newPost) {
     Post post = _posts[index];
 
-    print("changepost cagrildi" + index.toString());
-
     if (post != null) {
-      print("post null degil" + index.toString());
-
-      print("post.re" + post.readers.toString());
-      print("post.isLiked" + post.isLiked.toString());
-      print("post.isDisliked" + post.isDisliked.toString());
-
-      print("newPost.re" + newPost.readers.toString());
-      print("newPost.isLiked" + newPost.isLiked.toString());
-      print("newPost.isDisliked" + newPost.isDisliked.toString());
-
       post.readers = newPost.readers;
       post.like = newPost.like;
       post.isLiked = newPost.isLiked;

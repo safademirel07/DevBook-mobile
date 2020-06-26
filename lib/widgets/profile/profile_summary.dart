@@ -9,15 +9,20 @@ class ProfileSummary extends StatelessWidget {
   final String job;
   final String id;
 
-  ProfileSummary(this.id, this.profilePhoto, this.userName, this.job);
+  final bool noMargin;
+
+  ProfileSummary(
+      this.id, this.profilePhoto, this.userName, this.job, this.noMargin);
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+      margin: noMargin
+          ? EdgeInsets.zero
+          : EdgeInsets.only(left: 10, right: 10, bottom: 10),
       color: Colors.grey[300],
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(noMargin ? 0 : 10),
       ),
       child: InkWell(
         onTap: () {
@@ -28,7 +33,7 @@ class ProfileSummary extends StatelessWidget {
         child: Row(
           children: <Widget>[
             Container(
-              margin: new EdgeInsets.all(10.0),
+              margin: EdgeInsets.all(10.0),
               child: CustomCircleAvatar(
                 animationDuration: 300,
                 radius: 50.0,

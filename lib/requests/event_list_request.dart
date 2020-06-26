@@ -6,8 +6,6 @@ class EventListRequest {
   Future<http.Response> fetchEventAll(int page, String search) async {
     dynamic token = await SharedPreferenceHelper.getAuthToken;
 
-    print("eventall +" + search);
-
     if (search.length == 0) {
       return http.get(Constants.api_url + "/event/all?page=$page",
           headers: <String, String>{

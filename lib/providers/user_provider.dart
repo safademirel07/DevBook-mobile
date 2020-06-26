@@ -3,6 +3,7 @@ import 'package:devbook_new/models/get/profile.dart';
 import 'package:devbook_new/models/get/user.dart';
 import 'package:devbook_new/requests/profile_request.dart';
 import 'package:devbook_new/requests/user_request.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:convert';
 
@@ -22,7 +23,7 @@ class UserProvider with ChangeNotifier {
 
     UserRequest().loginRequest(email, password).then((data) {
       if (data.statusCode == 200) {
-        User user = User.fromJson(json.decode(data.body));
+        User user = User.fromJson(json.decode(data.body), "");
         SharedPreferenceHelper.setAuthToken(user.token);
         setChangedLoginStatus(true);
         setLoading(false);
@@ -41,6 +42,11 @@ class UserProvider with ChangeNotifier {
     UserRequest().logoutRequest().then((data) {
       if (data != null) {
         SharedPreferenceHelper.setAuthToken("");
+        SharedPreferenceHelper.setUID("");
+        SharedPreferenceHelper.setPassword("");
+        SharedPreferenceHelper.setUser("");
+        FirebaseAuth.instance.signOut();
+
         setLogout(true);
         setLoading(false);
       }

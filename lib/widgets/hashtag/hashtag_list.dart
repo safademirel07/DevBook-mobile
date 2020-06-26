@@ -171,6 +171,8 @@ class _HashtagListState extends State<HashtagList> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
+
     List<Hashtag> hashtags =
         Provider.of<HashtagListProvider>(context).getHashtags();
 

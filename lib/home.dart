@@ -1,10 +1,13 @@
 import 'package:devbook_new/models/get/hashtag.dart';
 import 'package:devbook_new/providers/profile_provider.dart';
+import 'package:devbook_new/widgets/chat/chat.dart';
+import 'package:devbook_new/widgets/chat/message_list.dart';
 import 'package:devbook_new/widgets/event/event_list.dart';
 import 'package:devbook_new/widgets/hashtag/hashtag_list.dart';
 import 'package:devbook_new/widgets/other/logo.dart';
 import 'package:devbook_new/widgets/profile/create_profile.dart';
 import 'package:devbook_new/widgets/profile/profile_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
@@ -39,6 +42,7 @@ class _HomeState extends State<Home> {
     PostList("", ""),
     HashtagList(""),
     EventList(""),
+    MessageList(),
     ProfileListWidget(""),
     ProfileWidget(""),
   ];
@@ -156,6 +160,10 @@ class _HomeState extends State<Home> {
                       new BottomNavigationBarItem(
                         icon: FaIcon(FontAwesomeIcons.calendarAlt),
                         title: Text('Events'),
+                      ),
+                      new BottomNavigationBarItem(
+                        icon: Icon(Icons.chat_bubble_outline),
+                        title: Text('Chat'),
                       ),
                       new BottomNavigationBarItem(
                         icon: Icon(Icons.people),

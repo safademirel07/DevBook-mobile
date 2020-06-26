@@ -21,7 +21,6 @@ class PostProvider with ChangeNotifier {
     PostRequest().fetchPost(id).then((data) {
       if (data.statusCode == 200) {
         setPost(Post.fromJson(json.decode(data.body)));
-        print("fetch post cagrildi..");
         Provider.of<PostListProvider>(context, listen: false)
             .changePost(listIndex, Post.fromJson(json.decode(data.body)));
       } else {

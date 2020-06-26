@@ -58,15 +58,11 @@ class _PostListState extends State<PostList> {
   }
 
   Future<void> refreshPosts() {
-    print("refreshposts" + widget.search);
-    print("refreshpostsdigeri " + _searchController.text);
     return Provider.of<PostListProvider>(context, listen: false)
         .fetchPostAll(widget.hashtag, selectedSort, _searchController.text);
   }
 
   Future<void> loadMorePost() {
-    print("loadmorepost " + widget.hashtag);
-
     return Provider.of<PostListProvider>(context, listen: false)
         .fetchPostMore(widget.hashtag, selectedSort, _searchController.text);
   }
@@ -101,7 +97,6 @@ class _PostListState extends State<PostList> {
   }
 
   void submitForm(bool all) async {
-    print("submitform " + selectedSort.toString());
     if (all) {
       Provider.of<PostListProvider>(context, listen: false)
           .fetchPostAll(widget.hashtag, selectedSort, "");
@@ -111,9 +106,6 @@ class _PostListState extends State<PostList> {
     } else {
       if (_formKey.currentState.validate()) {
         String search = _searchController.text;
-
-        print("Aranan search kelimesi " + search);
-
         FocusScope.of(context).unfocus();
 
         Provider.of<PostListProvider>(context, listen: false)
@@ -145,9 +137,10 @@ class _PostListState extends State<PostList> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
+
     List<Post> posts = Provider.of<PostListProvider>(context).getPosts();
 
-    print("hashtag" + widget.hashtag);
     return Scaffold(
       key: _scaffoldKey,
       body: Container(

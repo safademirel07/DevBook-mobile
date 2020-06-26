@@ -6,17 +6,19 @@ class User {
   String email;
   String photoUrl;
   String token;
+  String uid;
 
-  User({this.sId, this.name, this.email, this.photoUrl, this.token});
+  User({this.sId, this.name, this.email, this.photoUrl, this.token, this.uid});
 
   SharedPreferenceHelper sharedPreferenceHelper;
 
-  User.fromJson(Map<String, dynamic> json) {
+  User.fromJson(Map<String, dynamic> json, String _uid) {
     sId = json['_id'];
     name = json['name'];
     email = json['email'];
     photoUrl = json['photoUrl'];
     token = json['token'];
+    uid = _uid;
     //sharedPreferenceHelper.saveAuthToken(token);
   }
 

@@ -24,7 +24,6 @@ class ProfileProvider with ChangeNotifier {
       if (data.statusCode == 200) {
         setCreateProfile(false);
         setProfile(Profile.fromJson(json.decode(data.body)));
-        print(data.body);
       } else if (data.statusCode == 404) {
         setCreateProfile(true);
       } else {

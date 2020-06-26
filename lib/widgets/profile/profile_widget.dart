@@ -8,6 +8,7 @@ import 'package:devbook_new/widgets/profile/create_profile.dart';
 import 'package:devbook_new/widgets/profile/edit_profile.dart';
 import 'package:devbook_new/widgets/profile/edit_social.dart';
 import 'package:devbook_new/widgets/profile/social.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -166,6 +167,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   void logoutRequest(context) async {
     final token = await SharedPreferenceHelper.getAuthToken;
 
+    FirebaseAuth.instance.signOut();
+
     if (token == null || token.toString().length == 0) {
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => Login(),
@@ -264,7 +267,6 @@ class _ProfileWidgetState extends State<ProfileWidget> {
 
   Widget profileBuilder(Profile profile, bool isMine,
       ScrollController scrollController, double screenHeight) {
-    print("profile.skills.length" + profile.skills.length.toString());
     return RefreshIndicator(
       onRefresh: refreshProfile,
       child: SingleChildScrollView(

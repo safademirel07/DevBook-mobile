@@ -116,6 +116,7 @@ class _ProfileListWidgetState extends State<ProfileListWidget> {
 
   void submitForm(bool all) async {
     if (all) {
+      _searchController.text = "";
       Provider.of<ProfileListProvider>(context, listen: false)
           .fetchProfileAll("");
     } else {
@@ -132,6 +133,8 @@ class _ProfileListWidgetState extends State<ProfileListWidget> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
+
     List<Profile> profiles =
         Provider.of<ProfileListProvider>(context).getProfiles();
 
@@ -192,7 +195,8 @@ class _ProfileListWidgetState extends State<ProfileListWidget> {
                     profiles[index].sId,
                     profiles[index].profilePhoto,
                     profiles[index].handler,
-                    profiles[index].company);
+                    profiles[index].company,
+                    false);
               },
             ),
           ),

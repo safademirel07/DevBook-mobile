@@ -38,10 +38,6 @@ class AddEventState extends State<AddEvent> {
     }
 
     if (_fbKey.currentState.saveAndValidate()) {
-      print("address " + _pickedLocation.address);
-      print("latitude " + _pickedLocation.latLng.latitude.toString());
-      print("longitude " + _pickedLocation.latLng.longitude.toString());
-
       var eventForm = Event();
 
       DateTime date = _fbKey.currentState.value['date'];
@@ -55,11 +51,9 @@ class AddEventState extends State<AddEvent> {
       eventForm.longitude = _pickedLocation.latLng.longitude.toString();
       eventForm.date = newDate.toString();
 
-      print("secilen date " + eventForm.date);
-
       Provider.of<EventListProvider>(context, listen: false)
           .addEvent(eventForm);
-      //Navigator.pop(context);
+      Navigator.pop(context);
     }
   }
 

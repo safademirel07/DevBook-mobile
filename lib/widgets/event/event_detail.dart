@@ -7,11 +7,13 @@ import 'package:devbook_new/widgets/profile/biography.dart';
 import 'package:devbook_new/widgets/profile/profile_summary.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
 import 'package:devbook_new/models/get/profile.dart';
+import 'package:add_2_calendar/add_2_calendar.dart' as CalendarEvent;
 
 class EventDetailWidget extends StatefulWidget {
   final String id;
@@ -80,10 +82,59 @@ class _EventDetailWidgetState extends State<EventDetailWidget> {
     );
   }
 
-  void eventStatus(bool going) {
+  void addToCalendar(Event a) {
+    String title = a.title;
+    String description = a.description;
+    String location = a.location;
+
+    CalendarEvent.Event event = CalendarEvent.Event(
+      title: title,
+      description: description,
+      location: location,
+      startDate: DateTime.now(),
+      endDate: DateTime.now().add(Duration(days: 1)),
+      allDay: true,
+    );
+
+    CalendarEvent.Add2Calendar.addEvent2Cal(event).then((success) {
+      Fluttertoast.showToast(msg: success ? 'Success' : 'Error');
+    });
+  }
+
+  void eventStatus(bool going, Event event) {
     if (going) {
       Provider.of<EventProvider>(context, listen: false)
           .participationRequest(widget.id);
+
+      if (event.isParticipant == false) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            // return object of type Dialog
+            return AlertDialog(
+              title: new Text("Calendar"),
+              content: new Text(
+                  "Would you like to add this event to your calendar?"),
+              actions: <Widget>[
+                // usually buttons at the bottom of the dialog
+                new FlatButton(
+                  child: new Text("Yes"),
+                  onPressed: () {
+                    addToCalendar(event);
+                    Navigator.of(context).pop();
+                  },
+                ),
+                new FlatButton(
+                  child: new Text("No"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }
     } else {
       Provider.of<EventProvider>(context, listen: false)
           .maybeRequest(widget.id);
@@ -209,15 +260,12 @@ class _EventDetailWidgetState extends State<EventDetailWidget> {
                                                     fontWeight:
                                                         FontWeight.bold),
                                               ),
-                                              InkWell(
-                                                child: Flexible(
-                                                  child: Text(
-                                                    event.date,
-                                                    style:
-                                                        TextStyle(fontSize: 14),
-                                                  ),
+                                              Flexible(
+                                                child: Text(
+                                                  event.date,
+                                                  style:
+                                                      TextStyle(fontSize: 14),
                                                 ),
-                                                onTap: () => print("safa"),
                                               ),
                                             ],
                                           ),
@@ -247,7 +295,7 @@ class _EventDetailWidgetState extends State<EventDetailWidget> {
                                         ? Colors.white
                                         : Colors.black,
                                     onPressed: () {
-                                      eventStatus(true);
+                                      eventStatus(true, event);
                                     },
                                   ),
                                 ),
@@ -267,7 +315,7 @@ class _EventDetailWidgetState extends State<EventDetailWidget> {
                                         ? Colors.white
                                         : Colors.black,
                                     onPressed: () {
-                                      eventStatus(false);
+                                      eventStatus(false, event);
                                     },
                                   ),
                                 ),
@@ -306,7 +354,8 @@ class _EventDetailWidgetState extends State<EventDetailWidget> {
                                     event.participants[i].profileID,
                                     event.participants[i].profileImage,
                                     event.participants[i].profileName,
-                                    event.participants[i].profileJob),
+                                    event.participants[i].profileJob,
+                                    false),
                           ],
                         ),
                       ),
@@ -338,7 +387,8 @@ class _EventDetailWidgetState extends State<EventDetailWidget> {
                                     event.maybes[i].profileID,
                                     event.maybes[i].profileImage,
                                     event.maybes[i].profileName,
-                                    event.maybes[i].profileJob),
+                                    event.maybes[i].profileJob,
+                                    false),
                           ],
                         ),
                       ),

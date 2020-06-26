@@ -226,6 +226,8 @@ class _EventListState extends State<EventList> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
+
     List<Event> events = Provider.of<EventListProvider>(context).getEvents();
 
     return Scaffold(
