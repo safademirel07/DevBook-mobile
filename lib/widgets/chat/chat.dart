@@ -251,7 +251,6 @@ class _ChatState extends State<Chat> {
                   .document(groupChatId)
                   .collection(groupChatId)
                   .orderBy('timestamp', descending: true)
-                  .limit(20)
                   .snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {

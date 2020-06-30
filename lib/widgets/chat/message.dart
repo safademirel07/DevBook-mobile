@@ -8,6 +8,7 @@ import 'package:devbook_new/widgets/profile/profile_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:random_color/random_color.dart';
 
 import '../CustomCircleAvatar.dart';
@@ -68,25 +69,24 @@ class MessageSummary extends StatelessWidget {
                           color: Colors.black),
                     ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //mainAxisSize: MainAxisSize.max,
-                    children: <Widget>[
-                      Flexible(
-                        child: Container(
-                          child: StreamBuilder(
-                              stream: Firestore.instance
-                                  .collection('messages')
-                                  .document(pairID)
-                                  .collection(pairID)
-                                  .orderBy('timestamp', descending: true)
-                                  .limit(1)
-                                  .snapshots(),
-                              builder: (context, snapshot) {
-                                if (!snapshot.hasData) {
-                                  return new Text("");
-                                }
-                                return Text(
+                  Container(
+                    child: StreamBuilder(
+                        stream: Firestore.instance
+                            .collection('messages')
+                            .document(pairID)
+                            .collection(pairID)
+                            .orderBy('timestamp', descending: true)
+                            .limit(1)
+                            .snapshots(),
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) {
+                            return new Text("");
+                          }
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Flexible(
+                                child: Text(
                                   snapshot.data.documents[0]['content'],
                                   overflow: TextOverflow.fade,
                                   textAlign: TextAlign.left,
@@ -97,19 +97,24 @@ class MessageSummary extends StatelessWidget {
                                               user.email)
                                       ? TextStyle(fontWeight: FontWeight.bold)
                                       : TextStyle(),
-                                );
-                              }),
-                        ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.only(right: 10),
-                        child: Text(
-                          lastMessageDate,
-                          textAlign: TextAlign.left,
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      )
-                    ],
+                                ),
+                              ),
+                              Container(
+                                padding: EdgeInsets.only(right: 10),
+                                child: Text(
+                                  DateFormat('kk:mm').format(
+                                    DateTime.fromMillisecondsSinceEpoch(
+                                      int.parse(snapshot.data.documents[0]
+                                          ['timestamp']),
+                                    ),
+                                  ),
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ],
+                          );
+                        }),
                   ),
                 ],
               ),

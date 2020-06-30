@@ -1,7 +1,9 @@
+import 'package:devbook_new/models/get/profile.dart';
+
 class Event {
+  String sId;
   String profileName;
   String profileImage;
-  String sId;
   String title;
   String description;
   String location;
@@ -18,6 +20,8 @@ class Event {
 
   String latitude;
   String longitude;
+
+  Profile owner;
 
   Event({
     this.profileName,
@@ -69,6 +73,7 @@ class Event {
     participantCount = json['participantCount'];
     latitude = json['latitude'];
     longitude = json['longitude'];
+    owner = json['owner'] != null ? new Profile.fromJson(json['owner']) : null;
   }
 
   Map<String, dynamic> toJson() {

@@ -335,6 +335,30 @@ class _EventDetailWidgetState extends State<EventDetailWidget> {
                         ),
                         child: ExpansionTile(
                           title: Text(
+                            "Creator",
+                            style: TextStyle(color: Colors.black),
+                          ),
+                          children: <Widget>[
+                            ProfileSummary(
+                                event.owner.sId,
+                                event.owner.profilePhoto,
+                                event.owner.handler,
+                                event.owner.company,
+                                false),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      margin: EdgeInsets.only(bottom: 10, top: 10),
+                      child: Material(
+                        elevation: 5.0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: ExpansionTile(
+                          title: Text(
                             "Going (" + event.participantCount.toString() + ")",
                             style: TextStyle(color: Colors.black),
                           ),

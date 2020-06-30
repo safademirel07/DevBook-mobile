@@ -14,6 +14,8 @@ class EventListProvider with ChangeNotifier {
 
   bool fetchAgain = false;
 
+  Map<DateTime, List> eventCalendar;
+
   int page = 1;
 
   void setFetchAgain(bool value) {
@@ -179,6 +181,17 @@ class EventListProvider with ChangeNotifier {
 
   void setEvents(value) {
     _events = value;
+
+    _events.forEach((event) {
+      /*
+      DateTime(2020, 5, 7): [
+        {'name': 'Event A', 'isDone': true},
+      ],
+      */
+
+      print(event.title);
+    });
+
     setLoading(false);
     notifyListeners();
   }

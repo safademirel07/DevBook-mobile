@@ -5,6 +5,7 @@ import 'package:devbook_new/widgets/event/add_event.dart';
 import 'package:devbook_new/widgets/event/event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_clean_calendar/flutter_clean_calendar.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
@@ -218,10 +219,94 @@ class _EventListState extends State<EventList> {
     }
   }
 
-  Widget Calendar() {
-    return Container(
-      child: Text("safa"),
+  List _selectedEvents;
+  DateTime _selectedDay;
+
+  void _handleNewDate(date) {
+    setState(() {
+      _selectedDay = date;
+      _selectedEvents = _events[_selectedDay] ?? [];
+    });
+    print(_selectedEvents);
+  }
+
+  final Map<DateTime, List> _events = {};
+
+  Widget CalendarWidget() {
+    List<Event> events = Provider.of<EventListProvider>(context).getEvents();
+    setState(() {
+      _events.clear();
+      events.asMap().forEach((index, event) {
+        List<String> dateString = event.date.split(" ")[0].split(".");
+        String timeString = event.date.split(" ")[1];
+        String parseString = dateString[2] + dateString[1] + dateString[0];
+        // " " +
+        // timeString +
+        // ":00";
+        DateTime parsedDate = DateTime.parse(parseString);
+
+        List listAtDate = _events[parsedDate];
+
+        if (listAtDate == null) _events[parsedDate] = new List();
+
+        print("index ne " + index.toString());
+
+        _events[parsedDate]
+            .add({'name': event.title, "isDone": false, 'index': index});
+      });
+    });
+
+    print(_events);
+
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      children: <Widget>[
+        Search(),
+        Container(
+          child: Calendar(
+            startOnMonday: true,
+            isExpanded: true,
+            weekDays: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+            events: _events,
+            onRangeSelected: (range) =>
+                print("Range is ${range.from}, ${range.to}"),
+            onDateSelected: (date) => _handleNewDate(date),
+            isExpandable: true,
+            eventDoneColor: Colors.green,
+            selectedColor: Colors.grey,
+            todayColor: Colors.yellow,
+            eventColor: Colors.white,
+            bottomBarColor: Colors.white,
+            dayOfWeekStyle: TextStyle(color: Colors.white, fontSize: 11),
+          ),
+        ),
+        _buildEventList()
+      ],
     );
+  }
+
+  Widget _buildEventList() {
+    if (_selectedEvents == null) {
+      return Text("Not selected.");
+    } else {
+      List<Event> events = Provider.of<EventListProvider>(context).getEvents();
+
+      return Expanded(
+        child: ListView.builder(
+          itemBuilder: (BuildContext context, int index) => Container(
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(width: 1.5, color: Colors.black12),
+              ),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 4.0),
+            child: InkWell(
+                child: EventSummary(events[(_selectedEvents[index]['index'])])),
+          ),
+          itemCount: _selectedEvents.length,
+        ),
+      );
+    }
   }
 
   @override
@@ -245,12 +330,14 @@ class _EventListState extends State<EventList> {
                 child: CircularProgressIndicator(),
               )
             : Provider.of<EventListProvider>(context).anyEvent()
-                ? Column(
-                    children: <Widget>[
-                      Search(),
-                      calendarForm ? Calendar() : _createEventListView(events),
-                    ],
-                  )
+                ? calendarForm
+                    ? CalendarWidget()
+                    : Column(
+                        children: <Widget>[
+                          Search(),
+                          _createEventListView(events),
+                        ],
+                      )
                 : Column(
                     children: <Widget>[
                       Search(),

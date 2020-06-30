@@ -51,6 +51,8 @@ class _LoginState extends State<Login> {
       ),
     );
 
+    print("response.statusCode" + response.statusCode.toString());
+
     if (response.statusCode == 200) {
       try {
         var firebase = Firebase();
@@ -72,6 +74,7 @@ class _LoginState extends State<Login> {
 
         return User.fromJson(json.decode(response.body), signIn.uid);
       } catch (e) {
+        print("hata bu " + e);
         throw Future.error("Failed to login");
       }
     } else {
